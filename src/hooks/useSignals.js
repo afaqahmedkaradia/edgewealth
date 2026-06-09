@@ -55,7 +55,7 @@ export function useSignals() {
             batch.map(m => analyzeMarket(m))
           );
 
-          batchResults.forEach((result, j) => {
+// eslint-disable-next-line no-loop-func
             const market = batch[j];
             if (result.status === 'fulfilled') {
               results.push(buildSignal(market, result.value));
