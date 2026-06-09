@@ -1,0 +1,38 @@
+.ticker {
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border);
+  padding: 0 2rem;
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.ticker::-webkit-scrollbar { display: none; }
+
+.ticker__item {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 20px 8px 0;
+  border-right: 1px solid var(--border);
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+.ticker__name {
+  font-size: 10px;
+  color: var(--text-ghost);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.ticker__val {
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+.ticker__edge {
+  font-size: 11px;
+  font-weight: 700;
+}
+.ticker__edge--up { color: var(--orange); }
+.ticker__edge--dn { color: var(--red); }

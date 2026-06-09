@@ -1,0 +1,55 @@
+/* ─────────────────────────────────────────────
+   EdgeWealth — Global Styles
+   Vestox-inspired: orange, warm black, pearl white
+   Edit CSS variables below to change the theme.
+───────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap');
+
+/* ── Design Tokens ── */
+:root {
+  --bg-base:        #080806;
+  --bg-surface:     #0D0D0A;
+  --bg-deep:        #050503;
+  --border:         #1A1A16;
+  --border-hover:   #2A2520;
+
+  --orange:         #FF5C1A;
+  --orange-hover:   #FF7A40;
+  --orange-dim:     #FF5C1A18;
+  --orange-border:  #FF5C1A33;
+
+  --text-primary:   #F0EAE0;
+  --text-secondary: #A09080;
+  --text-muted:     #6A6055;
+  --text-faint:     #3A3530;
+  --text-ghost:     #2A2520;
+
+  --green:          #6A9040;
+  --red:            #805040;
+
+  --font-display:   'Syne', sans-serif;
+  --font-body:      'Inter', sans-serif;
+  --font-mono:      'IBM Plex Mono', monospace;
+
+  --radius-sm:      2px;
+  --radius-md:      3px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background:  var(--bg-base);
+  color:       var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+button { cursor: pointer; font-family: inherit; }
+a      { color: var(--orange); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar       { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: var(--bg-base); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }

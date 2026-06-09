@@ -1,0 +1,20 @@
+.app { min-height: 100vh; background: var(--bg-base); }
+
+.app__main { }
+
+.app__error {
+  background: #1A0A06;
+  border-bottom: 1px solid #4A1A0A;
+  padding: 10px 2rem;
+  font-size: 12px;
+  color: #C07040;
+}
+
+.app__body {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+}
+
+@media (max-width: 768px) {
+  .app__body { grid-template-columns: 1fr; }
+}
