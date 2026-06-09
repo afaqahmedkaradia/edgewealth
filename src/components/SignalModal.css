@@ -1,23 +1,23 @@
 .modal-wrap {
   position: fixed;
   inset: 0;
-  background: rgba(8, 8, 6, 0.93);
+  background: rgba(0,0,0,0.4);
   z-index: 500;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
-  padding: 4rem 1rem 2rem;
-  overflow-y: auto;
+  padding: 1rem;
 }
 
 .modal {
-  background: var(--bg-surface);
-  border: 1px solid #2A2520;
-  border-radius: var(--radius-md);
+  background: var(--bg);
+  border-radius: var(--radius-xl);
   width: 100%;
-  max-width: 520px;
+  max-width: 540px;
   padding: 2rem;
-  position: relative;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal__header {
@@ -29,24 +29,27 @@
 }
 
 .modal__question {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--text-primary);
   line-height: 1.4;
 }
 
 .modal__close {
-  background: none;
+  background: var(--bg-soft);
   border: none;
-  color: var(--text-ghost);
-  font-size: 20px;
-  line-height: 1;
-  padding: 0;
+  color: var(--text-secondary);
+  font-size: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
-  transition: color 0.15s;
+  transition: background 0.15s;
 }
-.modal__close:hover { color: var(--text-primary); }
+.modal__close:hover { background: var(--border); }
 
 .modal__badges {
   display: flex;
@@ -56,27 +59,23 @@
 }
 
 .modal__strength-badge {
-  font-size: 9px;
-  padding: 2px 8px;
-  border-radius: 1px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-family: var(--font-display);
-  background: var(--orange-dim);
-  color: var(--orange);
-  border: 1px solid var(--orange-border);
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-weight: 500;
+  background: var(--green-light);
+  color: var(--green-dark);
 }
 
 .modal__reasoning {
-  background: var(--bg-base);
-  border-left: 2px solid var(--orange);
+  background: var(--bg-soft);
+  border-left: 3px solid var(--green);
   padding: 1rem 1.25rem;
-  font-size: 13px;
-  color: var(--text-muted);
+  font-size: 14px;
+  color: var(--text-secondary);
   line-height: 1.7;
   margin-bottom: 1.25rem;
-  border-radius: 0 2px 2px 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .modal__data-grid {
@@ -87,75 +86,65 @@
 }
 
 .modal__data-item {
-  background: var(--bg-base);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px;
+  background: var(--bg-soft);
+  border-radius: var(--radius-md);
+  padding: 12px;
 }
 .modal__data-label {
-  font-size: 9px;
-  color: var(--text-ghost);
+  font-size: 11px;
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 5px;
-  font-family: var(--font-display);
-  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin-bottom: 6px;
+  font-weight: 500;
 }
 .modal__data-value {
-  font-family: var(--font-display);
-  font-size: 16px;
-  font-weight: 800;
-  color: var(--orange);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green-dark);
+  letter-spacing: -0.01em;
 }
-.modal__data-value--muted  { color: var(--text-secondary); font-size: 13px; font-weight: 600; }
-.modal__data-value--rec-YES{ color: var(--orange); }
-.modal__data-value--rec-NO { color: var(--red); }
-.modal__data-value--rec-SKIP{ color: var(--text-ghost); }
+.modal__data-value--muted { color: var(--text-secondary); font-size: 15px; font-weight: 600; }
+.modal__data-value--rec-YES { color: var(--green-dark); }
+.modal__data-value--rec-NO  { color: var(--red); }
+.modal__data-value--rec-SKIP{ color: var(--text-muted); }
 
 .modal__risks {
-  background: var(--bg-base);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  background: #FFF8EE;
+  border: 1px solid #FFE5A0;
+  border-radius: var(--radius-md);
   padding: 10px 14px;
-  font-size: 12px;
-  color: var(--text-muted);
+  font-size: 13px;
+  color: #664400;
   margin-bottom: 1.25rem;
   line-height: 1.6;
 }
 .modal__risks-label {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 10px;
+  font-weight: 600;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--red);
+  letter-spacing: 0.06em;
+  color: #996600;
   margin-right: 6px;
-}
-
-.modal__actions {
-  display: flex;
-  gap: 10px;
 }
 
 .modal__trade-btn {
   display: block;
   width: 100%;
-  background: var(--orange);
-  color: var(--bg-base);
+  background: var(--text-primary);
+  color: var(--bg);
   border: none;
-  padding: 12px;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  font-family: var(--font-display);
+  padding: 14px;
+  border-radius: 100px;
+  font-size: 15px;
+  font-weight: 600;
   text-align: center;
   text-decoration: none;
   transition: background 0.15s;
+  font-family: var(--font);
 }
 .modal__trade-btn:hover {
-  background: var(--orange-hover);
+  background: #333;
   text-decoration: none;
-  color: var(--bg-base);
+  color: var(--bg);
 }

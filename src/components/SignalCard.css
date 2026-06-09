@@ -1,102 +1,89 @@
 .signal-card {
-  background: var(--bg-surface);
+  background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 1rem 1.25rem;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
   cursor: pointer;
-  transition: border-color 0.15s, background 0.15s;
+  transition: box-shadow 0.15s, border-color 0.15s;
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 12px;
-  align-items: start;
+  gap: 1rem;
+  align-items: center;
   outline: none;
 }
 .signal-card:hover,
 .signal-card:focus {
-  border-color: var(--orange-border);
-  background: #100F0C;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  border-color: var(--border-dark);
 }
 
-/* Left border by strength */
-.signal-card--strong   { border-left: 2px solid var(--orange); }
-.signal-card--moderate { border-left: 2px solid #804020; }
-.signal-card--weak     { border-left: 2px solid #2A2520; }
-
 .signal-card__question {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  color: #D8D0C4;
-  line-height: 1.4;
-  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.45;
+  margin-bottom: 10px;
 }
 
 .signal-card__meta {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   align-items: center;
   flex-wrap: wrap;
 }
 
-/* Category badges */
 .badge {
-  font-size: 9px;
-  padding: 2px 8px;
-  border-radius: 1px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  font-family: var(--font-display);
-}
-.badge--crypto   { background: #100E18; color: #8878C8; border: 1px solid #8878C820; }
-.badge--politics { background: #0C1408; color: #6A9040; border: 1px solid #6A904020; }
-.badge--economy  { background: #150C04; color: #C07030; border: 1px solid #C0703020; }
-.badge--sports   { background: #150808; color: #C04040; border: 1px solid #C0404020; }
-.badge--other    { background: #101010; color: #808080; border: 1px solid #80808020; }
-
-.signal-card__odds {
   font-size: 11px;
-  color: var(--text-ghost);
-}
-.signal-card__odds strong {
-  color: var(--text-secondary);
+  padding: 3px 10px;
+  border-radius: 100px;
   font-weight: 500;
 }
-.signal-card__odds--bot strong { color: var(--orange); }
+.badge--crypto   { background: #EEF0FF; color: #4455CC; }
+.badge--politics { background: #EEFAF2; color: #1A7A40; }
+.badge--economy  { background: #FFF8EE; color: #996600; }
+.badge--sports   { background: #FFEEF0; color: #CC2233; }
+.badge--other    { background: var(--bg-soft); color: var(--text-muted); }
 
-/* Right side — edge number */
+.signal-card__odds {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.signal-card__odds strong { color: var(--text-secondary); font-weight: 500; }
+.signal-card__odds--bot strong { color: var(--green-dark); font-weight: 600; }
+
 .signal-card__right {
   text-align: right;
-  min-width: 52px;
+  min-width: 64px;
 }
 
 .signal-card__edge {
-  font-family: var(--font-display);
-  font-size: 20px;
-  font-weight: 800;
+  font-size: 22px;
+  font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1;
 }
-.signal-card__edge--strong   { color: var(--orange); }
-.signal-card__edge--moderate { color: #804020; }
-.signal-card__edge--weak     { color: var(--text-ghost); }
+.signal-card__edge--strong   { color: var(--green-dark); }
+.signal-card__edge--moderate { color: #997700; }
+.signal-card__edge--weak     { color: var(--text-faint); }
 
 .signal-card__edge-label {
-  font-size: 9px;
-  color: var(--text-ghost);
+  font-size: 10px;
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.06em;
   margin-top: 3px;
 }
 
 .signal-card__rec {
-  font-size: 10px;
-  font-weight: 700;
-  font-family: var(--font-display);
-  letter-spacing: 0.06em;
+  font-size: 11px;
+  font-weight: 600;
   text-transform: uppercase;
-  margin-top: 5px;
+  letter-spacing: 0.04em;
+  margin-top: 6px;
+  padding: 2px 8px;
+  border-radius: 100px;
+  display: inline-block;
 }
-.signal-card__rec--YES { color: var(--orange); }
-.signal-card__rec--NO  { color: var(--red); }
-.signal-card__rec--SKIP{ color: var(--text-ghost); }
+.signal-card__rec--YES  { background: var(--green-light); color: var(--green-dark); }
+.signal-card__rec--NO   { background: var(--red-light); color: var(--red); }
+.signal-card__rec--SKIP { background: var(--bg-soft); color: var(--text-muted); }
