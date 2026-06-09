@@ -1,0 +1,1 @@
+{"extends": "react-app", "rules": {"no-unused-vars": "warn", "no-loop-func": "warn"}}

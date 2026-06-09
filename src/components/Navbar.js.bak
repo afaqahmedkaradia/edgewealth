@@ -1,6 +1,6 @@
 // components/Navbar.js
 import React from 'react';
-
+import config from '../config';
 import './Navbar.css';
 
 export default function Navbar({ onGetSignals }) {
