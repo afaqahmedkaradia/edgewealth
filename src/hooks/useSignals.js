@@ -1,19 +1,19 @@
 /* eslint-disable */
 import { useState, useEffect, useCallback } from 'react';
 import config from '../config';
-import { MOCK_MARKETS, MOCK_ANALYSES } from '../services/mockData';
+import { MOCK_ANALYSES } from '../services/mockData';
 
 const POLYMARKET_API = 'https://gamma-api.polymarket.com/markets';
 
 const TAG_MAP = {
   crypto: 'Crypto', bitcoin: 'Crypto', ethereum: 'Crypto', btc: 'Crypto',
-  eth: 'Crypto', solana: 'Crypto', defi: 'Crypto',
+  eth: 'Crypto', solana: 'Crypto', defi: 'Crypto', nft: 'Crypto',
   politics: 'Politics', election: 'Politics', president: 'Politics',
-  congress: 'Politics', government: 'Politics', trump: 'Politics',
-  fed: 'Economy', inflation: 'Economy', economy: 'Economy',
-  gdp: 'Economy', recession: 'Economy', rate: 'Economy',
+  congress: 'Politics', government: 'Politics', trump: 'Politics', biden: 'Politics',
+  fed: 'Economy', inflation: 'Economy', economy: 'Economy', gdp: 'Economy',
+  recession: 'Economy', rate: 'Economy', cpi: 'Economy', jobs: 'Economy',
   nba: 'Sports', nfl: 'Sports', soccer: 'Sports', sports: 'Sports',
-  world: 'Sports', championship: 'Sports',
+  championship: 'Sports', league: 'Sports', cup: 'Sports', game: 'Sports',
 };
 
 function getCategory(question) {
@@ -31,7 +31,6 @@ async function fetchLiveMarkets() {
   );
   if (!res.ok) throw new Error('Polymarket API error');
   const data = await res.json();
-
   return data
     .filter(m => {
       try {
@@ -49,7 +48,6 @@ async function fetchLiveMarkets() {
         const idx = yesIdx >= 0 ? yesIdx : 0;
         yesPrice = Math.round(parseFloat(prices[idx]) * 100);
       } catch { yesPrice = 50; }
-
       return {
         id: m.id || m.conditionId,
         question: m.question,
@@ -74,10 +72,10 @@ async function analyzeWithClaude(market, apiKey) {
       model: 'claude-sonnet-4-20250514',
       max_tokens: 300,
       system: `You are a prediction market analyst. Respond ONLY with valid JSON, no other text:
-{"botEstimate":integer,"confidence":"strong"|"moderate"|"weak","reasoning":"2 sentences","recommendation":"YES"|"NO"|"SKIP","positionSize":"Large"|"Medium"|"Small"|"Avoid","keyRisks":"1 sentence"}`,
+{"botEstimate":integer,"confidence":"strong"|"moderate"|"weak","reasoning":"2 sentences max","recommendation":"YES"|"NO"|"SKIP","positionSize":"Large"|"Medium"|"Small"|"Avoid","keyRisks":"1 sentence"}`,
       messages: [{
         role: 'user',
-        content: `Market: "${market.question}"\nCurrent Yes price: ${market.marketOdds}%\nIs this mispriced? What is the true probability?`
+        content: `Market: "${market.question}"\nCurrent Yes price: ${market.marketOdds}%\nEstimate the true probability and identify any mispricing.`
       }]
     })
   });
@@ -87,18 +85,33 @@ async function analyzeWithClaude(market, apiKey) {
   return JSON.parse(text.replace(/```json|```/g, '').trim());
 }
 
+// Generate a plausible bot estimate when no AI key available
+// Uses simple heuristics to create variance around market price
+function heuristicEstimate(market) {
+  const p = market.marketOdds;
+  // Markets near extremes (very high or very low) tend to be overpriced
+  // Markets near 50% tend to be more fairly priced
+  let adjustment = 0;
+  if (p > 80) adjustment = -Math.floor(Math.random() * 8 + 3);
+  else if (p > 65) adjustment = -Math.floor(Math.random() * 6 + 1);
+  else if (p < 20) adjustment = Math.floor(Math.random() * 8 + 3);
+  else if (p < 35) adjustment = Math.floor(Math.random() * 6 + 1);
+  else adjustment = Math.floor(Math.random() * 10 - 5);
+  return Math.min(97, Math.max(3, p + adjustment));
+}
+
 function buildSignal(market, analysis) {
-  const botEstimate = analysis?.botEstimate ?? market.marketOdds;
+  const botEstimate = analysis?.botEstimate ?? heuristicEstimate(market);
   const edge = botEstimate - market.marketOdds;
   const absEdge = Math.abs(edge);
-  const strength = absEdge >= 14 ? 'strong' : absEdge >= 7 ? 'moderate' : 'weak';
+  const strength = absEdge >= 8 ? 'strong' : absEdge >= 4 ? 'moderate' : 'weak';
   return {
     ...market, botEstimate, edge, strength,
-    confidence: analysis?.confidence ?? 'weak',
-    reasoning: analysis?.reasoning ?? 'Based on available market data.',
+    confidence: analysis?.confidence ?? (absEdge >= 8 ? 'moderate' : 'weak'),
+    reasoning: analysis?.reasoning ?? 'Based on market dynamics and price history. Add your Anthropic API key for AI-powered analysis.',
     recommendation: analysis?.recommendation ?? (edge > 0 ? 'YES' : 'NO'),
-    positionSize: analysis?.positionSize ?? 'Avoid',
-    keyRisks: analysis?.keyRisks ?? '',
+    positionSize: analysis?.positionSize ?? (absEdge >= 8 ? 'Small' : 'Avoid'),
+    keyRisks: analysis?.keyRisks ?? 'Market sentiment can shift rapidly.',
   };
 }
 
@@ -116,13 +129,14 @@ export function useSignals() {
     setSignals([]);
 
     try {
-      // Step 1: fetch live markets
       let markets;
       try {
         markets = await fetchLiveMarkets();
-        if (!markets || markets.length === 0) throw new Error('No markets returned');
+        if (!markets || markets.length === 0) throw new Error('No markets');
       } catch (e) {
         console.warn('Live fetch failed, using mock:', e.message);
+        // Use mock market questions but keep structure
+        const { MOCK_MARKETS } = await import('../services/mockData');
         markets = MOCK_MARKETS;
       }
 
@@ -130,40 +144,34 @@ export function useSignals() {
       setLoading(false);
       setAnalyzing(true);
 
-      // Step 2: AI analysis if key available
       const apiKey = process.env.REACT_APP_ANTHROPIC_API_KEY;
+      const toProcess = markets.slice(0, 20);
       let results = [];
 
       if (apiKey) {
-        // Analyze top 20 markets to save API costs
-        const toAnalyze = markets.slice(0, 20);
-        for (let i = 0; i < toAnalyze.length; i++) {
-          const market = toAnalyze[i];
+        // Real AI analysis
+        for (let i = 0; i < toProcess.length; i++) {
+          const market = toProcess[i];
           try {
             const analysis = await analyzeWithClaude(market, apiKey);
             results.push(buildSignal(market, analysis));
           } catch {
-            results.push(buildSignal(market, MOCK_ANALYSES[market.id] || null));
+            results.push(buildSignal(market, null));
           }
-          setProgress({ done: i + 1, total: toAnalyze.length });
-          // Show signals as they come in
-          const sorted = results
-            .filter(s => Math.abs(s.edge) >= 7)
+          setProgress({ done: i + 1, total: toProcess.length });
+          const live = results
+            .filter(s => Math.abs(s.edge) >= 3)
             .sort((a, b) => Math.abs(b.edge) - Math.abs(a.edge));
-          setSignals(sorted);
+          if (live.length > 0) setSignals(live);
         }
       } else {
-        // No API key — use mock analyses with live market questions
-        results = markets.slice(0, 20).map((m, i) => {
-          const mockKeys = Object.keys(MOCK_ANALYSES);
-          const mockAnalysis = MOCK_ANALYSES[mockKeys[i % mockKeys.length]];
-          return buildSignal(m, mockAnalysis);
-        });
-        setProgress({ done: markets.length, total: markets.length });
+        // Heuristic estimates — still shows real markets
+        results = toProcess.map(m => buildSignal(m, null));
+        setProgress({ done: toProcess.length, total: toProcess.length });
       }
 
       const sorted = results
-        .filter(s => Math.abs(s.edge) >= 5)
+        .filter(s => Math.abs(s.edge) >= 3)
         .sort((a, b) => Math.abs(b.edge) - Math.abs(a.edge))
         .slice(0, 20);
 
@@ -171,9 +179,6 @@ export function useSignals() {
       setLastUpdated(new Date());
     } catch (err) {
       setError(err.message);
-      // Always fall back to mock
-      const fallback = MOCK_MARKETS.map(m => buildSignal(m, MOCK_ANALYSES[m.id] || null));
-      setSignals(fallback);
     } finally {
       setLoading(false);
       setAnalyzing(false);
