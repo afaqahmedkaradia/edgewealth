@@ -17,8 +17,8 @@ const config = {
   // Minimum % difference between market odds and
   // bot estimate to surface a signal
   edgeThresholds: {
-    strong:   14,   // >= 14% edge  → orange highlight
-    moderate:  7,   // >= 7% edge   → muted highlight
+    strong:    8,   // >= 14% edge  → orange highlight
+    moderate:  3,   // >= 7% edge   → muted highlight
     weak:      0,   // anything below → shown but dimmed
   },
 
